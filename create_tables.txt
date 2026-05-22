@@ -1,0 +1,22 @@
+-- =============================================
+-- Motocross Lap Time Tracker
+-- Table creation scripts
+-- =============================================
+
+CREATE TABLE Users (
+    Id           NVARCHAR(50)  NOT NULL PRIMARY KEY,
+    Username     NVARCHAR(100) NOT NULL UNIQUE,
+    PasswordHash NVARCHAR(256) NOT NULL,
+    Email        NVARCHAR(256) NOT NULL UNIQUE
+);
+
+CREATE TABLE LapTimes (
+    Id         INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
+    RiderName  NVARCHAR(100)  NOT NULL,
+    TrackName  NVARCHAR(100)  NOT NULL,
+    Time       TIME(3)        NOT NULL,
+    Date       DATETIME2      NOT NULL,
+    UserId     NVARCHAR(50)   NOT NULL,
+
+    CONSTRAINT FK_LapTimes_Users FOREIGN KEY (UserId) REFERENCES Users(Id)
+);

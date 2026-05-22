@@ -1,0 +1,114 @@
+-- =============================================
+-- Motocross Lap Time Tracker
+-- Stored Procedures
+-- =============================================
+
+
+-- =============================================
+-- LapTimes
+-- =============================================
+
+CREATE PROCEDURE sp_GetLapTimeById
+    @Id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT Id, RiderName, TrackName, Time, Date, UserId
+    FROM LapTimes
+    WHERE Id = @Id;
+END;
+GO
+
+CREATE PROCEDURE sp_GetLapTimesByUser
+    @UserId NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT Id, RiderName, TrackName, Time, Date, UserId
+    FROM LapTimes
+    WHERE UserId = @UserId;
+END;
+GO
+
+CREATE PROCEDURE sp_CreateLapTime
+    @RiderName  NVARCHAR(100),
+    @TrackName  NVARCHAR(100),
+    @Time       TIME(3),
+    @Date       DATETIME2,
+    @UserId     NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    INSERT INTO LapTimes (RiderName, TrackName, Time, Date, UserId)
+    OUTPUT INSERTED.Id
+    VALUES (@RiderName, @TrackName, @Time, @Date, @UserId);
+END;
+GO
+
+CREATE PROCEDURE sp_UpdateLapTime
+    @Id         INT,
+    @RiderName  NVARCHAR(100),
+    @TrackName  NVARCHAR(100),
+    @Time       TIME(3),
+    @Date       DATETIME2,
+    @UserId     NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE LapTimes
+    SET RiderName = @RiderName,
+        TrackName = @TrackName,
+        Time      = @Time,
+        Date      = @Date
+    WHERE Id = @Id AND UserId = @UserId;
+END;
+GO
+
+CREATE PROCEDURE sp_DeleteLapTime
+    @Id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DELETE FROM LapTimes WHERE Id = @Id;
+END;
+GO
+
+
+-- =============================================
+-- Users
+-- =============================================
+
+CREATE PROCEDURE sp_GetUserById
+    @Id NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT Id, Username, PasswordHash, Email
+    FROM Users
+    WHERE Id = @Id;
+END;
+GO
+
+CREATE PROCEDURE sp_GetUserByUsername
+    @Username NVARCHAR(100)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT Id, Username, PasswordHash, Email
+    FROM Users
+    WHERE Username = @Username;
+END;
+GO
+
+CREATE PROCEDURE sp_CreateUser
+    @Id           NVARCHAR(50),
+    @Username     NVARCHAR(100),
+    @PasswordHash NVARCHAR(256),
+    @Email        NVARCHAR(256)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    INSERT INTO Users (Id, Username, PasswordHash, Email)
+    VALUES (@Id, @Username, @PasswordHash, @Email);
+END;
+GO
